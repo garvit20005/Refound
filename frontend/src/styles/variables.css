@@ -1,0 +1,18 @@
+/* Colours and sizes used across the whole site. Change them here. */
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary: #a5b4fc;
+  --dark: #111827;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --tint: #eef2ff; /* very light indigo */
+
+  --error-bg: #fef2f2;
+  --error-text: #b91c1c;
+
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(17, 24, 39, 0.08);
+}
