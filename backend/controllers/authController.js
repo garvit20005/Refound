@@ -9,6 +9,7 @@ const userResponse = (user) => ({
   email: user.email,
   phone: user.phone,
   location: user.location,
+  role: user.role,
   createdAt: user.createdAt,
 });
 
@@ -52,6 +53,12 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error('Invalid email or password');
   }
 
+  // Blocked users cannot login
+  if (user.isBlocked) {
+    res.status(403);
+    throw new Error('Your account has been blocked. Please contact the admin.');
+  }
+
   res.json({ user: userResponse(user), token: generateToken(user._id) });
 });
 
@@ -78,4 +85,35 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.json(userResponse(user));
 });
 
-module.exports = { registerUser, loginUser, getMe, updateProfile };
+// PUT /api/auth/password  (change password)
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    res.status(400);
+    throw new Error('Please enter your current and new password');
+  }
+  if (newPassword.length < 6) {
+    res.status(400);
+    throw new Error('New password must be at least 6 characters');
+  }
+  if (currentPassword === newPassword) {
+    res.status(400);
+    throw new Error('New password must be different from the current one');
+  }
+
+  // req.user has no password (protect removed it), so load the user again
+  const user = await User.findById(req.user._id);
+
+  if (!(await user.matchPassword(currentPassword))) {
+    res.status(400);
+    throw new Error('Current password is incorrect');
+  }
+
+  user.password = newPassword; // the pre-save hook hashes it
+  await user.save();
+
+  res.json({ message: 'Password changed successfully' });
+});
+
+module.exports = { registerUser, loginUser, getMe, updateProfile, changePassword };

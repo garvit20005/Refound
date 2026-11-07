@@ -1,5 +1,6 @@
 const Item = require('../models/Item');
 const Claim = require('../models/Claim');
+const Flag = require('../models/Flag');
 const asyncHandler = require('../utils/asyncHandler');
 const uploadToCloudinary = require('../utils/uploadToCloudinary');
 
@@ -123,6 +124,7 @@ const markRecovered = asyncHandler(async (req, res) => {
 const deleteItem = asyncHandler(async (req, res) => {
   const item = await getOwnedItem(req, res);
   await Claim.deleteMany({ item: item._id }); // remove its claims too
+  await Flag.deleteMany({ item: item._id }); // and its complaints
   await item.deleteOne();
   res.json({ message: 'Item deleted' });
 });

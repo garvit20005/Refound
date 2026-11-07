@@ -9,6 +9,8 @@ const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const claimRoutes = require('./routes/claimRoutes');
+const flagRoutes = require('./routes/flagRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 connectDB();
 
@@ -26,6 +28,8 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/claims', claimRoutes);
+app.use('/api/flags', flagRoutes);
+app.use('/api/admin', adminRoutes);
 
 // These two must stay at the bottom
 app.use(notFound);

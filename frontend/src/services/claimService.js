@@ -5,3 +5,4 @@ export const getMyClaims = async () => (await api.get('/claims/my')).data;
 export const getReceivedClaims = async () => (await api.get('/claims/received')).data;
 export const updateClaimStatus = async (id, status) =>
   (await api.patch(`/claims/${id}`, { status })).data;
+export const cancelClaim = async (id) => (await api.delete(`/claims/${id}`)).data;

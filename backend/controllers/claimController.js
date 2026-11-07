@@ -135,4 +135,32 @@ const updateClaimStatus = asyncHandler(async (req, res) => {
   res.json(claim);
 });
 
-module.exports = { createClaim, getMyClaims, getReceivedClaims, updateClaimStatus };
+// DELETE /api/claims/:id  -> claimant cancels their own pending claim
+const cancelClaim = asyncHandler(async (req, res) => {
+  const claim = await Claim.findById(req.params.id).populate('item');
+  if (!claim) {
+    res.status(404);
+    throw new Error('Claim not found');
+  }
+
+  if (claim.claimant.toString() !== req.user._id.toString()) {
+    res.status(403);
+    throw new Error('You can only cancel your own claims');
+  }
+  if (claim.status !== 'Pending') {
+    res.status(400);
+    throw new Error('Only pending claims can be cancelled');
+  }
+
+  await claim.deleteOne();
+
+  res.json({ message: 'Claim cancelled' });
+});
+
+module.exports = {
+  createClaim,
+  getMyClaims,
+  getReceivedClaims,
+  updateClaimStatus,
+  cancelClaim,
+};

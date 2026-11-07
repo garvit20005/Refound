@@ -2,6 +2,7 @@
 @media (max-width: 1000px) {
   .item-grid { grid-template-columns: repeat(3, 1fr); }
   .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  .stats-grid-4 { grid-template-columns: repeat(2, 1fr); }
   .filter-bar { grid-template-columns: repeat(2, 1fr); }
   .profile-layout { grid-template-columns: 1fr; }
   .profile-layout .form-card { max-width: 100%; }

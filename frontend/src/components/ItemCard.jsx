@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import formatDate from '../utils/formatDate';
+import timeAgo from '../utils/timeAgo';
 
 function ItemCard({ item }) {
   return (
@@ -19,6 +20,7 @@ function ItemCard({ item }) {
         <p className="muted">{item.category}</p>
         <p className="muted">{item.location}</p>
         <p className="muted">{formatDate(item.date)}</p>
+        <p className="muted small">Reported {timeAgo(item.createdAt)}</p>
       </div>
     </Link>
   );

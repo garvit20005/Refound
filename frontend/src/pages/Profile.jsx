@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { updateProfile } from '../services/authService';
+import ChangePasswordForm from '../components/ChangePasswordForm';
 import { getMyItems } from '../services/itemService';
 import getErrorMessage from '../utils/getErrorMessage';
 import formatDate from '../utils/formatDate';
@@ -46,6 +47,7 @@ function Profile() {
       <h1>My profile</h1>
 
       <div className="profile-layout">
+        <div>
         <form className="form-card" onSubmit={handleSubmit}>
           {error && <p className="alert alert-error">{error}</p>}
           {success && <p className="alert alert-success">{success}</p>}
@@ -67,6 +69,9 @@ function Profile() {
             {saving ? 'Saving...' : 'Save changes'}
           </button>
         </form>
+
+        <ChangePasswordForm />
+        </div>
 
         <div>
           <h2>My reported items</h2>

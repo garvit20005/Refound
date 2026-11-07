@@ -4,15 +4,40 @@
   --primary-dark: #4f46e5;
   --secondary: #a5b4fc;
   --dark: #111827;
+
   --bg: #f8fafc;
   --card: #ffffff;
+  --text: #111827;
   --border: #e5e7eb;
   --muted: #6b7280;
   --tint: #eef2ff; /* very light indigo */
+  --link: #4f46e5;
+  --strong-bg: #111827; /* dark chips (active tab, Lost badge) */
+  --strong-text: #ffffff;
 
   --error-bg: #fef2f2;
   --error-text: #b91c1c;
 
   --radius: 10px;
   --shadow: 0 1px 3px rgba(17, 24, 39, 0.08);
+  color-scheme: light;
+}
+
+/* Dark mode: the same names, different colours */
+[data-theme='dark'] {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --border: #334155;
+  --muted: #94a3b8;
+  --tint: #26305a;
+  --link: #a5b4fc;
+  --strong-bg: #475569;
+  --strong-text: #ffffff;
+
+  --error-bg: #3f1d1d;
+  --error-text: #fca5a5;
+
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
 }

@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getItemById, deleteItem, markItemRecovered } from '../services/itemService';
 import { createClaim } from '../services/claimService';
+import { createFlag } from '../services/flagService';
 import useAuth from '../hooks/useAuth';
 import getErrorMessage from '../utils/getErrorMessage';
 import formatDate from '../utils/formatDate';
+import timeAgo from '../utils/timeAgo';
 import Loader from '../components/Loader';
 
 function ItemDetails() {
@@ -20,6 +22,13 @@ function ItemDetails() {
   const [claimError, setClaimError] = useState('');
   const [claimSent, setClaimSent] = useState(false);
   const [sending, setSending] = useState(false);
+
+  // "Report this post" form
+  const [showFlag, setShowFlag] = useState(false);
+  const [flagForm, setFlagForm] = useState({ reason: '', note: '' });
+  const [flagError, setFlagError] = useState('');
+  const [flagMessage, setFlagMessage] = useState('');
+  const [flagSending, setFlagSending] = useState(false);
 
   useEffect(() => {
     const loadItem = async () => {
@@ -86,6 +95,27 @@ function ItemDetails() {
     setSending(false);
   };
 
+  const handleFlagChange = (e) => setFlagForm({ ...flagForm, [e.target.name]: e.target.value });
+
+  const handleFlagSubmit = async (e) => {
+    e.preventDefault();
+    setFlagError('');
+
+    if (!flagForm.reason) {
+      setFlagError('Please select a reason');
+      return;
+    }
+
+    setFlagSending(true);
+    try {
+      const data = await createFlag({ itemId: item._id, ...flagForm });
+      setFlagMessage(data.message);
+    } catch (err) {
+      setFlagError(getErrorMessage(err));
+    }
+    setFlagSending(false);
+  };
+
   return (
     <div className="container section">
       <Link to="/explore" className="back-link">Back to Explore</Link>
@@ -115,7 +145,7 @@ function ItemDetails() {
             <dt>Reported by</dt>
             <dd>{item.user ? item.user.name : 'Unknown'}</dd>
             <dt>Reported on</dt>
-            <dd>{formatDate(item.createdAt)}</dd>
+            <dd>{formatDate(item.createdAt)} ({timeAgo(item.createdAt)})</dd>
           </dl>
           <p className="muted small">Contact details stay private until a claim is accepted.</p>
 
@@ -127,6 +157,44 @@ function ItemDetails() {
                 <button className="btn btn-primary" onClick={handleRecovered}>Mark as recovered</button>
               )}
               <button className="btn btn-outline" onClick={handleDelete}>Delete</button>
+            </div>
+          )}
+
+          {/* Report this post (only on other people's posts) */}
+          {user && !isOwner && (
+            <div className="flag-box">
+              {flagMessage ? (
+                <p className="alert alert-success">{flagMessage}</p>
+              ) : !showFlag ? (
+                <button type="button" className="link-button" onClick={() => setShowFlag(true)}>
+                  Report this post
+                </button>
+              ) : (
+                <form onSubmit={handleFlagSubmit}>
+                  {flagError && <p className="alert alert-error">{flagError}</p>}
+
+                  <label>Why are you reporting this post?</label>
+                  <select name="reason" value={flagForm.reason} onChange={handleFlagChange}>
+                    <option value="">Select a reason</option>
+                    <option value="Spam">Spam</option>
+                    <option value="Fake or misleading">Fake or misleading</option>
+                    <option value="Inappropriate">Inappropriate</option>
+                    <option value="Other">Other</option>
+                  </select>
+
+                  <label>More details (optional)</label>
+                  <textarea name="note" rows="2" maxLength="300" value={flagForm.note} onChange={handleFlagChange} />
+
+                  <div className="action-row">
+                    <button type="submit" className="btn btn-primary btn-small" disabled={flagSending}>
+                      {flagSending ? 'Sending...' : 'Send report'}
+                    </button>
+                    <button type="button" className="btn btn-outline btn-small" onClick={() => setShowFlag(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           )}
 

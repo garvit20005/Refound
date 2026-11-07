@@ -4,6 +4,7 @@ const {
   getMyClaims,
   getReceivedClaims,
   updateClaimStatus,
+  cancelClaim,
 } = require('../controllers/claimController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -13,5 +14,6 @@ router.post('/', protect, createClaim);
 router.get('/my', protect, getMyClaims);
 router.get('/received', protect, getReceivedClaims);
 router.patch('/:id', protect, updateClaimStatus);
+router.delete('/:id', protect, cancelClaim);
 
 module.exports = router;

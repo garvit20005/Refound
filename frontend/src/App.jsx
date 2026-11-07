@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import MyReports from './pages/MyReports.jsx';
 import MyClaims from './pages/MyClaims.jsx';
 import Profile from './pages/Profile.jsx';
+import Admin from './pages/Admin.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 function App() {
@@ -35,6 +36,8 @@ function App() {
           <Route path="/my-reports" element={<ProtectedRoute><MyReports /></ProtectedRoute>} />
           <Route path="/my-claims" element={<ProtectedRoute><MyClaims /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+
+          <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
     },
     phone: { type: String, required: [true, 'Phone number is required'], trim: true },
     location: { type: String, required: [true, 'Location is required'], trim: true },
+    // 'user' for normal people, 'admin' for moderators
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    // a blocked user cannot login or post
+    isBlocked: { type: Boolean, default: false },
   },
   { timestamps: true } // adds createdAt and updatedAt automatically
 );

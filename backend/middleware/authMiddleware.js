@@ -27,8 +27,23 @@ const protect = asyncHandler(async (req, res, next) => {
     throw new Error('User no longer exists.');
   }
 
+  // A blocked user cannot do anything, even with an old token
+  if (user.isBlocked) {
+    res.status(403);
+    throw new Error('Your account has been blocked. Please contact the admin.');
+  }
+
   req.user = user; // available in controllers
   next();
 });
 
-module.exports = { protect };
+// adminOnly: use after protect. Lets only admins continue.
+const adminOnly = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    return next();
+  }
+  res.status(403);
+  throw new Error('Admin access only');
+};
+
+module.exports = { protect, adminOnly };

@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getMyClaims, getReceivedClaims, updateClaimStatus } from '../services/claimService';
+import {
+  getMyClaims,
+  getReceivedClaims,
+  updateClaimStatus,
+  cancelClaim,
+} from '../services/claimService';
 import getErrorMessage from '../utils/getErrorMessage';
 import formatDate from '../utils/formatDate';
 import Loader from '../components/Loader';
@@ -33,6 +38,17 @@ function MyClaims() {
     try {
       await updateClaimStatus(claimId, status);
       loadClaims(); // reload so statuses (and contact details) update
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
+  };
+
+  const handleCancel = async (claimId) => {
+    if (!window.confirm('Cancel this claim?')) return;
+    setError('');
+    try {
+      await cancelClaim(claimId);
+      loadClaims();
     } catch (err) {
       setError(getErrorMessage(err));
     }
@@ -121,7 +137,14 @@ function MyClaims() {
                 <p className="muted small">Sent on {formatDate(claim.createdAt)}</p>
                 <p><strong>Your message:</strong> {claim.message}</p>
 
-                {claim.status === 'Pending' && <p className="muted">Waiting for the finder to respond.</p>}
+                {claim.status === 'Pending' && (
+                  <>
+                    <p className="muted">Waiting for the finder to respond.</p>
+                    <button className="btn btn-outline btn-small" onClick={() => handleCancel(claim._id)}>
+                      Cancel claim
+                    </button>
+                  </>
+                )}
                 {claim.status === 'Rejected' && <p className="muted">The finder did not accept this claim.</p>}
                 {claim.status === 'Accepted' && claim.item?.user && (
                   <div className="note">

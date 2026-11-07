@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import useTheme from '../hooks/useTheme';
 
 function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
@@ -40,6 +42,9 @@ function Navbar() {
               <NavLink to="/my-reports" onClick={closeMenu}>My Reports</NavLink>
               <NavLink to="/my-claims" onClick={closeMenu}>My Claims</NavLink>
               <NavLink to="/profile" onClick={closeMenu}>Profile</NavLink>
+              {user.role === 'admin' && (
+                <NavLink to="/admin" onClick={closeMenu}>Admin</NavLink>
+              )}
               <button className="btn btn-outline btn-small" onClick={handleLogout}>
                 Logout
               </button>
@@ -52,6 +57,10 @@ function Navbar() {
               </Link>
             </>
           )}
+
+          <button className="btn btn-outline btn-small" onClick={toggleTheme}>
+            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          </button>
         </nav>
       </div>
     </header>

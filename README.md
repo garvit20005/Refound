@@ -23,6 +23,13 @@ ReFound is a MERN-stack web app where people can report lost items, post found i
 - My Reports: edit, delete, mark as recovered
 - Dashboard with statistics and recent activity
 - Profile page (edit name, phone, location)
+- Change password
+- Cancel a pending claim
+- Report this post (spam / fake / inappropriate)
+- Dark mode (saved in the browser)
+- Item age ("Reported 3 days ago")
+- Admin role + admin dashboard (stats, users, posts, reports)
+- Blocked users cannot login or post
 
 ## Folder structure
 
@@ -81,6 +88,7 @@ Open http://localhost:5173.
 | POST | /api/auth/login | Login | No |
 | GET | /api/auth/me | Current user | Yes |
 | PUT | /api/auth/profile | Update profile | Yes |
+| PUT | /api/auth/password | Change password | Yes |
 | GET | /api/items | All items (search, category, type, location, sort) | No |
 | GET | /api/items/my | My items | Yes |
 | POST | /api/items | Create report | Yes |
@@ -92,6 +100,23 @@ Open http://localhost:5173.
 | GET | /api/claims/my | Claims I sent | Yes |
 | GET | /api/claims/received | Claims on my found items | Yes |
 | PATCH | /api/claims/:id | Accept / reject (item owner only) | Yes |
+| DELETE | /api/claims/:id | Cancel my pending claim | Yes |
+| POST | /api/flags | Report a post | Yes |
+| GET | /api/admin/stats | Totals for the admin dashboard | Admin |
+| GET | /api/admin/users | All users | Admin |
+| PATCH | /api/admin/users/:id/block | Block / unblock a user | Admin |
+| GET | /api/admin/items | All posts | Admin |
+| DELETE | /api/admin/items/:id | Delete any post | Admin |
+| GET | /api/admin/flags | Reported posts | Admin |
+| PATCH | /api/admin/flags/:id | Resolve / dismiss a report | Admin |
+
+## Making your first admin
+
+1. Sign up normally in the app.
+2. In the `backend` folder run: `npm run make-admin -- your@email.com`
+3. Logout and login again. You will see an **Admin** link in the navbar.
+
+(Alternative: in MongoDB Compass or Atlas, open the `users` collection and change your user's `role` from `user` to `admin`.)
 
 ## How claims work (good for viva)
 
